@@ -64,9 +64,9 @@ export const DriverListResults = ({ drivers, ...rest }) => {
                     </Box>
                   </TableCell>
                   <TableCell>{driver.wa_number}</TableCell>
-                  <TableCell>{driver.departure}</TableCell>
-                  <TableCell>{`${driver.from.kabupaten} - ${driver.from.kecamatan}`}</TableCell>
-                  <TableCell>{`${driver.to.kabupaten} - ${driver.to.kecamatan}`}</TableCell>
+                  <TableCell>{driver?.departure}</TableCell>
+                  <TableCell>{`${driver.from?.kabupaten} - ${driver.from?.kecamatan}`}</TableCell>
+                  <TableCell>{`${driver.to?.kabupaten} - ${driver.to?.kecamatan}`}</TableCell>
                   <TableCell>
                   <Button sx={{marginRight: '10px'}} size="small" variant="outlined"  color="warning" startIcon={<CreateIcon />}>
                       Edit

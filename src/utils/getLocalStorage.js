@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
 
 export default (key) => {
-  const [data, setData] = useState();
+  let data;
   let res = localStorage.getItem(key);
-  res != null ? setData(JSON.parse(res)) : setData(null);
-
+  res != null ? (data = JSON.parse(res)) : (data = null);
+data.token = "Bearer " + data.token
   return data;
 };
