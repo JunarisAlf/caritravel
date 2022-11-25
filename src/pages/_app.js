@@ -31,7 +31,6 @@ const App = ({ Component, pageProps, emotionCache = clientSideEmotionCache }) =>
           <AuthProvider>
             <AuthConsumer>
                 {() =>  <Component {...pageProps} />}
-             
             </AuthConsumer>
           </AuthProvider>
         </ThemeProvider>

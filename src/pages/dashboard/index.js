@@ -13,12 +13,12 @@ import { DashboardLayout } from "../../components/dashboard-layout";
 import useAuth from "../../utils/useAuth";
 
 const Page = () => {
-  let [isLoading] = useAuth({key: 'user', roleIsNot: 'admin', redirectTo: '/dashboard/login'})
+  let [isLoading] = useAuth({ key: "user", roleIsNot: "admin", redirectTo: "/dashboard/login" });
 
   return (
-      <>
-      {!isLoading &&  (
-        <>
+    <>
+      {!isLoading && (
+        <DashboardLayout>
           <Head>
             <title>Dashboard</title>
           </Head>
@@ -58,14 +58,12 @@ const Page = () => {
               </Grid>
             </Container>
           </Box>
-        </>
+        </DashboardLayout>
       )}
-      </>
-  )
-  
- 
+    </>
+  );
 };
 
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
+// Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default Page;

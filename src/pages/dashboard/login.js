@@ -11,7 +11,7 @@ import localVar from "../../utils/localVar";
 import useAuth from "../../utils/useAuth";
 
 const Login = () => {
-  let [isLoading] =useAuth({key: 'user', roleIs: 'admin', redirectTo: '/dashboard'})
+  let [isLoading] =useAuth({key: 'user', roleIs: 'admin', redirectTo: '/dashboard', redirect: false})
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -24,6 +24,8 @@ const Login = () => {
   });
 
   const [logErr, setLogErr] = useState(false);
+  const [errMsg, setErrMsg] = useState('');
+
   const handleLogin = (val) => {
     axios
       .post(`${localVar.API_URL}/admin/login`, {
@@ -39,6 +41,7 @@ const Login = () => {
         //   signIn({ role: "admin" });
             Router.push("/dashboard").catch(console.error);
         } else {
+            setErrMsg(response.data.message)
           setLogErr(true);
         }
       })
@@ -106,7 +109,7 @@ const Login = () => {
                 <Box sx={{ py: 2 }}>
                   {logErr && (
                     <Alert sx={{ my: 3 }} severity="error">
-                      Username atau Password salah!
+                      {errMsg}
                     </Alert>
                   )}
                   <Button
