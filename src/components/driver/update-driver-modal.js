@@ -40,7 +40,8 @@ export const UpdateDriverModal = ({
   const [location, setLocation] = useState([]);
   const [name, setName] = useState("");
   const [to, setTo] = useState("");
-  const [from, setFrom] = useState("");
+  const [from, setFrom] = useState("")
+  const [seats, setSeats] = useState([])
 
   const [pwModal, setPwModal] = useState(false)
   const [seatModal, setSeatModal] = useState(false)
@@ -60,10 +61,12 @@ export const UpdateDriverModal = ({
         setTime(resData.departure);
         setFrom(resData.from.id);
         setTo(resData.to.id);
+        setSeats(resData.seats)
         console.log(resData);
       })
       .catch(function (err) {
-        let errRes = err.response.data;
+        // let errRes = err.response.data;
+        console.log(err)
       });
       axios
       .get(`${localVar.API_URL}/admin/location`, {
@@ -80,12 +83,22 @@ export const UpdateDriverModal = ({
         console.log(err);
       });
   }, []);
+
   const submitHandler = () => {
     let admin = getLocalStorage("user");
     axios
-      .post(
-        `${localVar.API_URL}/admin/driver`,
-        { name: fullName, wa_number: waNumber, password: password, car_type: carType },
+      .put(
+        `${localVar.API_URL}/admin/driver/${driverID}`,
+        { name: fullName,
+            wa_number: waNumber, 
+            password: password, 
+            car_type: carType,
+            price: price,
+            location_from: from,
+            location_to: to,
+            departure: time
+        
+        },
         {
           headers: { Authorization: admin.token },
         }
@@ -107,7 +120,7 @@ export const UpdateDriverModal = ({
   return (
     <form autoComplete="off" noValidate>
         <UpdatePasswordModal open={pwModal} setOpen={setPwModal}/>
-        <UpdateSeatModal open={seatModal} setOpen={setSeatModal}/>
+        <UpdateSeatModal open={seatModal} setOpen={setSeatModal} seats={seats} driverID={driverID}/>
 
       <Card>
         <CardHeader subheader="Masukan data dengan sesuai!" title="Update Data Driver" />
