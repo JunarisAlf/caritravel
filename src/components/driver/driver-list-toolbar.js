@@ -11,6 +11,7 @@ import {
   Typography,
   Modal,
 } from "@mui/material";
+import { v4 as uuidv4 } from "uuid";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -18,10 +19,11 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import localVar from "../../utils/localVar";
 import getLocalStorage from "../../utils/getLocalStorage";
 import axios from "axios";
-import PersonSearchIcon from '@mui/icons-material/PersonSearch';
+import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import { Search as SearchIcon } from "../../icons/search";
 import { Upload as UploadIcon } from "../../icons/upload";
 import { Download as DownloadIcon } from "../../icons/download";
+import { CreateDriverModal } from "./create-driver-modal";
 
 const modalStyle = {
   position: "absolute",
@@ -35,7 +37,6 @@ const modalStyle = {
   p: 4,
 };
 export const DriverListToolbar = (props) => {
-
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -55,36 +56,36 @@ export const DriverListToolbar = (props) => {
   const handleChangeFrom = (event) => {
     setFrom(event.target.value);
   };
-  const searchHandler = ()=> {
+  const searchHandler = () => {
     let admin = getLocalStorage("user");
-    axios.get(`${localVar.API_URL}/admin/filter`, {
+    axios
+      .get(`${localVar.API_URL}/admin/filter`, {
         headers: { Authorization: admin.token },
-        params: {name: name}
-    })
-    .then(function (res) {
+        params: { name: name },
+      })
+      .then(function (res) {
         let drivers = res.data.data;
-        props.setDrivers(drivers)
-        
+        props.setDrivers(drivers);
       })
       .catch(function (err) {
         console.log(err);
       });
-  }
-  const filterHandler = ()=> {
+  };
+  const filterHandler = () => {
     let admin = getLocalStorage("user");
-    axios.get(`${localVar.API_URL}/admin/filter`, {
+    axios
+      .get(`${localVar.API_URL}/admin/filter`, {
         headers: { Authorization: admin.token },
-        params: {from, to, time} 
-        
-    })
-    .then(function (res) {
+        params: { from, to, time },
+      })
+      .then(function (res) {
         let drivers = res.data.data;
-        props.setDrivers(drivers)
+        props.setDrivers(drivers);
       })
       .catch(function (err) {
         console.log(err);
       });
-  }
+  };
   useEffect(() => {
     let admin = getLocalStorage("user");
     axios
@@ -103,9 +104,8 @@ export const DriverListToolbar = (props) => {
       });
   }, []);
 
-  
   return (
-    <Box {...props}>
+    <Box>
       <Box
         sx={{
           alignItems: "center",
@@ -129,12 +129,8 @@ export const DriverListToolbar = (props) => {
             aria-describedby="modal-modal-description"
           >
             <Box sx={modalStyle}>
-              <Typography id="modal-modal-title" variant="h6" component="h2">
-                Text in a modal
-              </Typography>
-              <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-              </Typography>
+              {/* <CreateDriverModal/> */}
+              <CreateDriverModal handleClose={handleClose} setSnackOpen={props.setSnackOpen} setSnackAtr={props.setSnackAtr} setReFecth={props.setReFecth} reFetch={props.reFetch}/>
             </Box>
           </Modal>
         </Box>
@@ -147,7 +143,7 @@ export const DriverListToolbar = (props) => {
                 <TextField
                   fullWidth
                   value={name}
-                  onChange={(e)=> setName(e.target.value)}
+                  onChange={(e) => setName(e.target.value)}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -161,23 +157,25 @@ export const DriverListToolbar = (props) => {
                   variant="outlined"
                 />
                 <FormControl sx={{ marginTop: 2, minWidth: 120 }} size="medium">
-                    <Button onClick={searchHandler} variant="contained" color="primary" size="large" endIcon={<PersonSearchIcon />}>
-                        Cari
-                    </Button>
+                  <Button
+                    onClick={searchHandler}
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    endIcon={<PersonSearchIcon />}
+                  >
+                    Cari
+                  </Button>
                 </FormControl>
               </Grid>
               <Grid item lg={6} sm={6} xl={6} xs={12}>
                 <FormControl sx={{ m: 1, minWidth: 120 }} size="medium">
-                  <Select
-                    value={time}
-                    onChange={handleChangeTime}
-                    displayEmpty
-                    >
+                  <Select value={time} onChange={handleChangeTime} displayEmpty>
                     <MenuItem value="" disabled>
                       <em>Waktu</em>
                     </MenuItem>
                     {localVar.TIME.map((t) => (
-                      <MenuItem value={t}>
+                      <MenuItem key={uuidv4()} value={t}>
                         <em>{t}</em>
                       </MenuItem>
                     ))}
@@ -185,43 +183,40 @@ export const DriverListToolbar = (props) => {
                 </FormControl>
 
                 <FormControl sx={{ m: 1, minWidth: 120 }} size="medium">
-                <Select
-                    value={to}
-                    onChange={handleChangeTo}
-                    displayEmpty
-                    >
+                  <Select value={to} onChange={handleChangeTo} displayEmpty>
                     <MenuItem value="" disabled>
                       <em>Tujuan</em>
                     </MenuItem>
                     {location.map((loc) => (
-                      <MenuItem value={loc.id}>
+                      <MenuItem key={uuidv4()} value={loc.id}>
                         <em>{loc.name}</em>
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
                 <FormControl sx={{ m: 1, minWidth: 120 }} size="medium">
-                <Select
-                    value={from}
-                    onChange={handleChangeFrom}
-                    displayEmpty
-                    >
+                  <Select value={from} onChange={handleChangeFrom} displayEmpty>
                     <MenuItem value="" disabled>
                       <em>Asal</em>
                     </MenuItem>
                     {location.map((loc) => (
-                      <MenuItem value={loc.id}>
+                      <MenuItem key={uuidv4()} value={loc.id}>
                         <em>{loc.name}</em>
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
                 <FormControl sx={{ m: 1, minWidth: 120 }} size="medium">
-                    <Button onClick={filterHandler} variant="contained" color="primary" size="large" endIcon={<PersonSearchIcon />}>
-                        Cari
-                    </Button>
+                  <Button
+                    onClick={filterHandler}
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    endIcon={<PersonSearchIcon />}
+                  >
+                    Cari
+                  </Button>
                 </FormControl>
-                
               </Grid>
             </Grid>
           </CardContent>
