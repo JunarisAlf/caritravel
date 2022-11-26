@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Box, Container, Modal, Snackbar, Alert } from "@mui/material";
+import { Box, Container, Modal, Snackbar, Alert, } from "@mui/material";
 import { DriverListResults } from "../../components/driver/driver-list-results";
 import { DriverListToolbar } from "../../components/driver/driver-list-toolbar";
 import SnackBar from "../../components/driver/snack-bar";
@@ -65,7 +65,8 @@ const Page = () => {
             setReFecth={setReFecth} reFetch={reFetch}
             />
             <Box sx={{ mt: 3 }}>
-              <DriverListResults drivers={drivers} />
+              <DriverListResults drivers={drivers} setSnackOpen={setSnackOpen} setSnackAtr={setSnackAtr} 
+            setReFecth={setReFecth} reFetch={reFetch}/>
             </Box>
           </Container>
         </Box>

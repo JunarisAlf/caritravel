@@ -36,7 +36,7 @@ export const CreateDriverModal = ({ handleClose , setSnackOpen, setSnackAtr, set
         setSnackAtr({msg: resData.message, type: 'success'})
         setSnackOpen(true)
         setReFecth(!reFetch)
-        console.log(resData);
+        // console.log(resData);
       })
       .catch(function (err) {
         let errRes = err.response.data
