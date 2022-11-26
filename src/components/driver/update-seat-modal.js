@@ -36,7 +36,15 @@ const seatStyle = {
   width: "50px",
   height: "50px",
 };
-export default function UpdateSeatModal({ open, setOpen, seats, driverID}) {
+export default function UpdateSeatModal({ 
+    open, 
+    setOpen, 
+    seats, 
+    driverID, 
+    setSnackOpen,
+    setSnackAtr,
+    setReFecth,
+    reFetch}) {
 
     let [isLoading, setIsLoading] = React.useState(true)
     let [carSeat, setCarSeat] = React.useState()
@@ -109,15 +117,20 @@ export default function UpdateSeatModal({ open, setOpen, seats, driverID}) {
                 seats: updatedSeats
           },
           {
-            headers: { Authorization: admin.token },
+            headers: { Authorization: admin.token},
           })
           .then(function (res) {
             let resData = res.data;
-            console.log(resData);
+            setOpen(false);
+            setSnackAtr({ msg: resData.message, type: "success" });
+            setSnackOpen(true);
+            setReFecth(!reFetch);
           })
           .catch(function (err) {
-            // let errRes = err.response.data;
-            console.log(err)
+              console.log(err)
+            let errRes = err.response.data;
+            setSnackAtr({ msg: errRes.message, type: "error" });
+            setSnackOpen(true);
           });
     }
 
@@ -209,7 +222,7 @@ export default function UpdateSeatModal({ open, setOpen, seats, driverID}) {
               <Button color="error" onClick={() => setOpen(false)}>
                 Batalkan
               </Button>
-              <Button onClick={() => { handleSubmit(); setOpen(false)}}>Simpan Perubahan</Button>
+              <Button onClick={() => handleSubmit()}>Simpan Perubahan</Button>
             </DialogActions>
           </Dialog>
         </Modal>

@@ -25,7 +25,8 @@ import localVar from "../../utils/localVar";
 
 export const UpdateDriverModal = ({
   driverID,
-  handleClose,
+  open,
+  setOpen,
   setSnackOpen,
   setSnackAtr,
   setReFecth,
@@ -97,7 +98,6 @@ export const UpdateDriverModal = ({
             location_from: from,
             location_to: to,
             departure: time
-        
         },
         {
           headers: { Authorization: admin.token },
@@ -105,7 +105,7 @@ export const UpdateDriverModal = ({
       )
       .then(function (res) {
         let resData = res.data;
-        handleClose();
+        setOpen(false);
         setSnackAtr({ msg: resData.message, type: "success" });
         setSnackOpen(true);
         setReFecth(!reFetch);
@@ -119,8 +119,9 @@ export const UpdateDriverModal = ({
 
   return (
     <form autoComplete="off" noValidate>
-        <UpdatePasswordModal open={pwModal} setOpen={setPwModal}/>
-        <UpdateSeatModal open={seatModal} setOpen={setSeatModal} seats={seats} driverID={driverID}/>
+        <UpdatePasswordModal open={pwModal} setOpen={setPwModal}  driverID={driverID} setSnackOpen={setSnackOpen} setSnackAtr={setSnackAtr} setReFecth={setReFecth} reFetch={reFetch}/>
+
+        <UpdateSeatModal open={seatModal} setOpen={setSeatModal} seats={seats} driverID={driverID} setSnackOpen={setSnackOpen} setSnackAtr={setSnackAtr}  setReFecth={setReFecth} reFetch={reFetch}/>
 
       <Card>
         <CardHeader subheader="Masukan data dengan sesuai!" title="Update Data Driver" />
@@ -244,7 +245,7 @@ export const UpdateDriverModal = ({
         >
           <Button
             onClick={() => {
-              handleClose();
+              setOpen(false);
             }}
             sx={{ marginRight: "10px" }}
             color="warning"
@@ -253,7 +254,7 @@ export const UpdateDriverModal = ({
             Cancel
           </Button>
           <Button onClick={submitHandler} color="primary" variant="contained">
-            Save details
+            Simpan perubahan
           </Button>
         </Box>
       </Card>

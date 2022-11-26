@@ -9,6 +9,11 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
+
+import axios from "axios";
+import getLocalStorage from "../../utils/getLocalStorage";
+import localVar from "../../utils/localVar";
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -23,15 +28,45 @@ const style = {
   pb: 3,
 };
 
-export default function UpdatePasswordModal({open, setOpen}) {
+export default function UpdatePasswordModal({open, 
+    setOpen, 
+    seats, 
+    driverID, 
+    setSnackOpen,
+    setSnackAtr,
+    setReFecth,
+    reFetch}) {
+
+const [password, setPassword] = React.useState('')
+const submitHandler = () => {
+    let admin = getLocalStorage("user");
+    axios
+        .put(`${localVar.API_URL}/admin/driver/password/${driverID}`, {
+            password: password
+        },
+        {
+        headers: { Authorization: admin.token},
+        })
+        .then(function (res) {
+        let resData = res.data;
+        setOpen(false);
+        setSnackAtr({ msg: resData.message, type: "success" });
+        setSnackOpen(true);
+        // setReFecth(!reFetch);
+        })
+        .catch(function (err) {
+            console.log(err)
+        let errRes = err.response.data;
+        setSnackAtr({ msg: errRes.message, type: "error" });
+        setSnackOpen(true);
+        });
+}
   return (
     <React.Fragment>
       <Modal
         hideBackdrop
         open={open}
         onClose={() => setOpen(false)}
-        aria-labelledby="child-modal-title"
-        aria-describedby="child-modal-description"
       >
         <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Ubah Password Driver</DialogTitle>
@@ -47,11 +82,13 @@ export default function UpdatePasswordModal({open, setOpen}) {
             type="text"
             fullWidth
             variant="standard"
+            value={password}
+            onChange={(e)=>setPassword(e.target.value)}
           />
         </DialogContent>
         <DialogActions>
           <Button color="error" onClick={() => setOpen(false)}>Batalkan</Button>
-          <Button onClick={() => setOpen(false)}>Simpan Perubahan</Button>
+          <Button onClick={() => submitHandler()}>Ubah password</Button>
         </DialogActions>
       </Dialog>
       </Modal>

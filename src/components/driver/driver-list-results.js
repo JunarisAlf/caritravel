@@ -39,13 +39,11 @@ export const DriverListResults = ({ drivers, ...rest }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
 
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false)
+  const [updateOpen, setUpdateOpen] = useState(false);
 
   const [confirOpen, setConfirOpen] = useState(false);
   const [confirAtr, setConfirAtr] = useState('')
-const [driverID, setDriverID]= useState()
+    const [driverID, setDriverID]= useState()
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
   };
@@ -59,13 +57,13 @@ const [driverID, setDriverID]= useState()
     <DeleteConfirmation setOpen={setConfirOpen} open={confirOpen} confirAtr={confirAtr} {...rest}/>
    
     <Modal
-            open={open}
-            onClose={handleClose}
+            open={updateOpen}
+            onClose={()=> setUpdateOpen(false)}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
           >
             <Box sx={modalStyle}>
-              <UpdateDriverModal handleClose={handleClose} driverID={driverID} {...rest}/>
+              <UpdateDriverModal  driverID={driverID} open={updateOpen} setOpen={setUpdateOpen} {...rest}/>
             </Box>
           </Modal>
     
@@ -102,7 +100,7 @@ const [driverID, setDriverID]= useState()
                   <TableCell>{`${driver.from?.kabupaten} - ${driver.from?.kecamatan}`}</TableCell>
                   <TableCell>{`${driver.to?.kabupaten} - ${driver.to?.kecamatan}`}</TableCell>
                   <TableCell>
-                  <Button onClick={() => {handleOpen(); setDriverID(driver.id)}} sx={{marginRight: '10px'}} size="small" variant="outlined"  color="warning" startIcon={<CreateIcon />}>
+                  <Button onClick={() => {setUpdateOpen(true); setDriverID(driver.id)}} sx={{marginRight: '10px'}} size="small" variant="outlined"  color="warning" startIcon={<CreateIcon />}>
                       Edit
                     </Button>
                     <Button onClick={() => {setConfirOpen(true); setConfirAtr({name: driver.name, id: driver.id})}} size="small" variant="outlined"  color="error" startIcon={<DeleteIcon />}>
