@@ -32,7 +32,6 @@ export const UpdateDriverModal = ({
   setReFecth,
   reFetch,
 }) => {
-  const [password, setPassword] = useState("");
   const [price, setPrice] = useState("");
   const [carType, setCarType] = useState("");
   const [waNumber, setWaNumber] = useState("");
@@ -92,7 +91,6 @@ export const UpdateDriverModal = ({
         `${localVar.API_URL}/admin/driver/${driverID}`,
         { name: fullName,
             wa_number: waNumber, 
-            password: password, 
             car_type: carType,
             price: price,
             location_from: from,

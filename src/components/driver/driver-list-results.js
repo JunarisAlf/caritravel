@@ -127,5 +127,5 @@ export const DriverListResults = ({ drivers, ...rest }) => {
 };
 
 DriverListResults.propTypes = {
-  drivers: PropTypes.array.isRequired,
+  drivers: PropTypes.array,
 };
