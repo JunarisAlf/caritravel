@@ -39,57 +39,74 @@ const seatStyle = {
 export default function UpdateSeatModal({ 
     open, 
     setOpen, 
-    seats, 
+    setSeat, 
     driverID, 
-    setSnackOpen,
-    setSnackAtr,
-    setReFecth,
-    reFetch}) {
+    }) {
 
     let [isLoading, setIsLoading] = React.useState(true)
     let [carSeat, setCarSeat] = React.useState()
     let [updateSeat, setUpdateSeat] =React.useState()
     const [seatStatus, setSeatStatus] = React.useState(['avalaible', 'not-avalaible', "not-used"])
-    React.useEffect(()=>{
-        let newSeats = {}
-
-        if(seats.length == 0 || seats == null ){
-            let id = ['A1', 'B1', 'B2', 'B3', 'C1', "C2", 'C3']
-            id.forEach((e) => {
-                newSeats[e] = 
-                {
-                    id: `${driverID}-${e}`,
-                    status: 'avalaible',
-                    color: 'info'
-                }
-            })
-        }else{
-            seats.forEach((seat, i) => {
-                let color;
-                if(seat.status == 'avalaible'){
-                    color = 'info'
-                }else if(seat.status == 'not-avalaible'){
-                    color = 'success'
-                }else{
-                    color = 'error'
-                }
     
-                newSeats[seat.seat_id] = 
-                {
-                    id: seat.id,
-                    status: seat.status,
-                    color
-                }
-            })
-        }
+    
+    React.useEffect(()=>{
+        const admin = getLocalStorage('user')
+        axios.get(`${localVar.API_URL}/admin/driver-seat/${driverID}`, {
+            headers: { Authorization: admin.token },
+        })
+        .then(function(res){
+            let seats = res.data.data
+            let newSeats = {}
+            if(seats.length == 0 || seats == null ){
+                let id = ['A1', 'B1', 'B2', 'B3', 'C1', "C2", 'C3']
+                id.forEach((e) => {
+                    newSeats[e] = 
+                    {
+                        id: `${driverID}-${e}`,
+                        status: 'avalaible',
+                        color: 'info',
+                        isDisabled: false
+                    }
+                })
+            }else{
+                seats.forEach((seat, i) => {
+                    let color;
+                    let isDisabled;
+                    if(seat.status == 'avalaible'){
+                        color = 'info'
+                        isDisabled = false
+                    }else if(seat.status == 'not-avalaible'){
+                        color = 'success'
+                        isDisabled =true
+                    }else{
+                        color = 'error'
+                        isDisabled =true
+                    }
+                    newSeats[seat.seat_id] = 
+                    {
+                        id: seat.id,
+                        status: seat.status,
+                        color,
+                        isDisabled
+                    }
+                })
+            }
+            setCarSeat(newSeats);
+            setIsLoading(false)
+        })
+        .catch(function(err){
+            console.log(err)
+        })  
+
         
-        setCarSeat(newSeats);
-        setIsLoading(false)
-    }, [seats])
+        
+        
+    }, [driverID])
+
     const handleSeatClick = (e) => {
         let id = e.currentTarget.id
         let counter = e.currentTarget.ariaValueNow++
-        if (counter == 2){
+        if (counter == 1){
             e.currentTarget.ariaValueNow = 0
         }
         let newSeat = {...carSeat}
@@ -111,31 +128,12 @@ export default function UpdateSeatModal({
         for (const key in carSeat){
             updatedSeats.push({id: carSeat[key].id, seat_id: key ,status: carSeat[key].status})
         }
-        let admin = getLocalStorage("user");
-        axios
-          .put(`${localVar.API_URL}/admin/driver-seat/${driverID}`, {
-                seats: updatedSeats
-          },
-          {
-            headers: { Authorization: admin.token},
-          })
-          .then(function (res) {
-            let resData = res.data;
-            setOpen(false);
-            setSnackAtr({ msg: resData.message, type: "success" });
-            setSnackOpen(true);
-            setReFecth(!reFetch);
-          })
-          .catch(function (err) {
-              console.log(err)
-            let errRes = err.response.data;
-            setSnackAtr({ msg: errRes.message, type: "error" });
-            setSnackOpen(true);
-          });
+        setSeat(updatedSeats)
+        setOpen(false)
     }
 
     if(isLoading){
-        return <span>loading...</span>
+        return <span></span>
     }else{
         return (
         <React.Fragment>
@@ -147,12 +145,12 @@ export default function UpdateSeatModal({
           aria-describedby="child-modal-description"
         >
           <Dialog open={open} onClose={() => setOpen(false)}>
-            <DialogTitle>Update Driver Seat</DialogTitle>
+            <DialogTitle>Pilih Kursi</DialogTitle>
             <DialogContent>
-              <DialogContentText>Update driver seat</DialogContentText>
+              <DialogContentText>Pilih kursi sesuai dengan pesanan customer</DialogContentText>
               <Grid container sx={{ width: "200px", height: "200px", margin: "20px" }}>
                 <Grid item xs={4}>
-                  <Button variant="contained" color={carSeat.A1.color} ariaValueNow={0} ariaValueNow={0} id="A1" onClick={(e) => handleSeatClick(e) }>
+                  <Button variant="contained" color={carSeat.A1.color}  ariaValueNow={0} ariaValueNow={0} disabled={carSeat.A1.isDisabled} id="A1" onClick={(e) => handleSeatClick(e)}>
                     <EventSeatIcon />
                   </Button>
                 </Grid>
@@ -163,32 +161,32 @@ export default function UpdateSeatModal({
                   </Button>
                 </Grid>
                 <Grid item xs={4}>
-                  <Button variant="contained" color={carSeat.B1.color} ariaValueNow={0} id="B1" onClick={(e) => handleSeatClick(e) }>
+                  <Button variant="contained" color={carSeat.B1.color} disabled={carSeat.B1.isDisabled} ariaValueNow={0} id="B1" onClick={(e) => handleSeatClick(e) }>
                     <EventSeatIcon />
                   </Button>
                 </Grid>
                 <Grid item xs={4}>
-                  <Button variant="contained" color={carSeat.B2.color} ariaValueNow={0} id="B2" onClick={(e) => handleSeatClick(e) }>
+                  <Button variant="contained" color={carSeat.B2.color} ariaValueNow={0} disabled={carSeat.B2.isDisabled} id="B2" onClick={(e) => handleSeatClick(e) }>
                     <EventSeatIcon />
                   </Button>
                 </Grid>
                 <Grid item xs={4}>
-                  <Button variant="contained" color={carSeat.B3.color} ariaValueNow={0} id="B3" onClick={(e) => handleSeatClick(e) }>
+                  <Button variant="contained" color={carSeat.B3.color} ariaValueNow={0} disabled={carSeat.B3.isDisabled} id="B3" onClick={(e) => handleSeatClick(e) }>
                     <EventSeatIcon />
                   </Button>
                 </Grid>
                 <Grid item xs={4}>
-                  <Button variant="contained" color={carSeat.C1.color} ariaValueNow={0} id="C1" onClick={(e) => handleSeatClick(e) }>
+                  <Button variant="contained" color={carSeat.C1.color} ariaValueNow={0} disabled={carSeat.C1.isDisabled} id="C1" onClick={(e) => handleSeatClick(e) }>
                     <EventSeatIcon />
                   </Button>
                 </Grid>
                 <Grid item xs={4}>
-                  <Button variant="contained" color={carSeat.C2.color} ariaValueNow={0} id="C2" onClick={(e) => handleSeatClick(e) }>
+                  <Button variant="contained" color={carSeat.C2.color} ariaValueNow={0} disabled={carSeat.C2.isDisabled} id="C2" onClick={(e) => handleSeatClick(e) }>
                     <EventSeatIcon />
                   </Button>
                 </Grid>
                 <Grid item xs={4}>
-                  <Button variant="contained" color={carSeat.C3.color} ariaValueNow={0} id="C3" onClick={(e) => handleSeatClick(e) }>
+                  <Button variant="contained" color={carSeat.C3.color} ariaValueNow={0} disabled={carSeat.C3.isDisabled} id="C3" onClick={(e) => handleSeatClick(e) }>
                     <EventSeatIcon />
                   </Button>
                 </Grid>
@@ -201,12 +199,12 @@ export default function UpdateSeatModal({
               </Grid>
               <Grid item xs={12}>
                 <Button size="small" variant="contained" color="success">
-                  TERISI
+                  DIPILIH
                 </Button>
               </Grid>
               <Grid item xs={12}>
-                <Button size="small" variant="contained" color="error">
-                  TIDAK DIPAKAI
+                <Button size="small" disabled variant="contained" color="error">
+                  TIDAK DIPAKAI/TERISI
                 </Button>
               </Grid>
               <Grid item xs={12}>

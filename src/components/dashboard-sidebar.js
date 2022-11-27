@@ -15,6 +15,9 @@ import { Users as UsersIcon } from "../icons/users";
 import { XCircle as XCircleIcon } from "../icons/x-circle";
 import { Logo } from "./logo";
 import { NavItem } from "./nav-item";
+import DriveEtaIcon from '@mui/icons-material/DriveEta';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 const items = [
   {
@@ -24,18 +27,18 @@ const items = [
   },
   {
     href: "/dashboard/driver",
-    icon: <UsersIcon fontSize="small" />,
+    icon: <DriveEtaIcon fontSize="small" />,
     title: "Driver",
   },
   {
-    href: "/dashboard/customer",
-    icon: <ShoppingBagIcon fontSize="small" />,
-    title: "Pelanggan",
+    href: "/dashboard/order",
+    icon: <FormatListBulletedIcon fontSize="small" />,
+    title: "Order",
   },
   
   {
     href: "/dashboard/location",
-    icon: <CogIcon fontSize="small" />,
+    icon: <LocationOnIcon fontSize="small" />,
     title: "Lokasi",
   },
   {
