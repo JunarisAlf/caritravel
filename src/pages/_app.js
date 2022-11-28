@@ -11,6 +11,7 @@ import { registerChartJs } from "../utils/register-chart-js";
 import { theme } from "../theme";
 
 registerChartJs();
+import '../../public/style/tailwind.css'
 
 const clientSideEmotionCache = createEmotionCache();
 
