@@ -182,7 +182,7 @@ export default function () {
         {drivers.length == 0 && <span> Driver tidak ditemuakn </span>}
         {drivers.map((driver) => (
           <div key={driver.id} className="block p-6 rounded-lg shadow-lg bg-white max-w-sm w-full">
-            <h5 className="text-gray-900 text-xl leading-tight font-medium mb-2">Driver 01</h5>
+            <h5 className="text-gray-900 text-xl leading-tight font-medium mb-2">{driver.name}</h5>
             <p className="text-gray-700 text-base mb-2">
               <strong>Berangkat : </strong> {driver.departure}
             </p>
