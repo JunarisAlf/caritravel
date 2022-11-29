@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
 
 
 import axios from "axios";
@@ -9,11 +11,28 @@ import useAuth from "../../utils/useAuth";
 import getLocalStorage from "../../utils/getLocalStorage";
 import EventSeatIcon from "@mui/icons-material/EventSeat";
 import DriveEtaIcon from "@mui/icons-material/DriveEta";
+import {UpdateDriverModal} from '../../components/account/update-driver-modal'
+import UpdateSeatModal from '../../components/account/update-seat-modal'
 
+
+const modalStyle = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "90%",
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
+  
 export default function index() {
+  const [refresh, setRefresh] = useState(false)
   const [isLoading, setIsLoading] = useState(true);
   const [driver, setDriver] = useState({});
-
+  const [seatModal, setSeatModal] = useState(false)
+  const [updateOpen,setUpdateOpen] = useState(false)
   const [carSeat, setCarSeat] = useState({
     A1:{
         id: "-",
@@ -59,16 +78,17 @@ export default function index() {
     }
 })
   useEffect(() => {
+      console.log(refresh)
     const [loading] = useAuth({
       key: "user",
       roleIsNot: "driver",
       redirectTo: "/driver/login",
     });
 
-    let admin = getLocalStorage("user");
+    let driver = getLocalStorage("user");
     axios
       .get(`${localVar.API_URL}/driver/data`, {
-        headers: { Authorization: admin.token },
+        headers: { Authorization: driver.token },
       })
       .then(function (res) {
         setDriver(res.data.data);
@@ -91,7 +111,6 @@ export default function index() {
         }else{
             seats.forEach((seat, i) => {
                 let color;
-                let isDisabled;
                 if(seat.status == 'avalaible'){
                     color = 'info'
                 }else if(seat.status == 'not-avalaible'){
@@ -113,11 +132,9 @@ export default function index() {
         console.log(err);
       });
     setIsLoading(loading);
-  });
+  }, [refresh]);
 
-  if (isLoading) {
-    return <span>Loading...</span>;
-  } else {
+
     return (
       <div className="flex flex-col w-full items-center py-4">
         <div className="block p-6 rounded-lg shadow-lg bg-white max-w-sm w-full">
@@ -212,20 +229,27 @@ export default function index() {
             </Grid>
           </div>
 
-          
-
-          <button
-            onClick={() => {
-              //   setDriverDetail(driver);
-              //   setConfirModal(true);
-            }}
-            type="button"
-            className=" inline-block mb-4 mt-4 px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-800 hover:shadow-lg focus:bg-blue-800 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+          <Modal
+            open={updateOpen}
+            onClose={()=> setUpdateOpen(false)}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
           >
-            Update Data
-          </button>
+            <Box sx={modalStyle}>
+              <UpdateDriverModal refresh={refresh} setRefresh={setRefresh} driverID={driver.id} open={updateOpen} setOpen={setUpdateOpen}/>
+            </Box>
+          </Modal>
+          {!isLoading &&  <UpdateSeatModal refresh={refresh} setRefresh={setRefresh} open={seatModal} setOpen={setSeatModal} seats={driver.seats} driverID={driver.id}/>}
+         
+          
+          <Button sx={{marginRight: '10px'}} onClick={()=>setUpdateOpen(true)} variant="contained" size="medium" color="primary">
+                Update Data
+            </Button>
+          <Button onClick={()=>setSeatModal(true)} variant="contained" size="medium"     color="warning" endIcon={<EventSeatIcon />}>
+                Update Seat
+            </Button>
         </div>
       </div>
     );
-  }
+  
 }
