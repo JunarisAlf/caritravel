@@ -67,7 +67,7 @@ export const CreateDriverModal = ({ handleClose , setSnackOpen, setSnackAtr, set
             <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
-                helperText="Gunakan format +628"
+                helperText="Gunakan format 08XX"
                 label="Nomor WA"
                 name="waNumber"
                 onChange={(e) => setWaNumber(e.target.value)}

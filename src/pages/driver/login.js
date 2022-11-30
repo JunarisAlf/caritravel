@@ -93,7 +93,7 @@ const Login = () => {
 
               <TextField
                 fullWidth
-                label="Nomor WA"
+                label="Nomor WA (format 08XX)"
                 margin="normal"
                 name="waNumber"
                 onBlur={formik.handleBlur}

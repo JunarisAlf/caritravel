@@ -88,7 +88,7 @@ export default function index() {
     let driver = getLocalStorage("user");
     axios
       .get(`${localVar.API_URL}/driver/data`, {
-        headers: { Authorization: driver.token },
+        headers: { Authorization: driver?.token },
       })
       .then(function (res) {
         setDriver(res.data.data);
@@ -138,7 +138,7 @@ export default function index() {
     return (
       <div className="flex flex-col w-full items-center py-4">
         <div className="block p-6 rounded-lg shadow-lg bg-white max-w-sm w-full">
-          <h5 className="text-gray-900 text-xl leading-tight font-medium mb-2">Driver 01</h5>
+          <h5 className="text-gray-900 text-xl leading-tight font-medium mb-2">{driver?.name}</h5>
           <p className="text-gray-700 text-base mb-2">
             <strong>Berangkat : </strong> {driver.departure == null ? "-" : driver.departure}
           </p>
